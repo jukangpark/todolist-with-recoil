@@ -31,15 +31,31 @@ import { useForm } from "react-hook-form";
   );
 }
  */
+interface IForm {
+  email: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  password: string;
+  password1: string;
+  extraError?: string;
+}
 
 function ToDoList() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const onValid = (data: any) => {
-    console.log(data);
+    setError,
+  } = useForm<IForm>({
+    defaultValues: {
+      email: "@naver.com",
+    },
+  });
+  const onValid = (data: IForm) => {
+    if (data.password !== data.password1) {
+      setError("password1", { message: "Password are not the same" });
+    }
   };
 
   console.log(errors);
@@ -60,19 +76,22 @@ function ToDoList() {
           })}
           placeholder="Email"
         />
-        <span>{errors.email?.message}</span>
+        <span>{errors?.email?.message}</span>
         <input
-          {...register("firstName", { required: true })}
+          {...register("firstName", { required: "write here" })}
           placeholder="First Name"
         />
+        <span>{errors?.firstName?.message}</span>
         <input
-          {...register("lastName", { required: true })}
+          {...register("lastName", { required: "write here" })}
           placeholder="Last Name"
         />
+        <span>{errors?.lastName?.message}</span>
         <input
-          {...register("username", { required: true, minLength: 10 })}
+          {...register("userName", { required: "write here", minLength: 10 })}
           placeholder="Username"
         />
+        <span>{errors?.userName?.message}</span>
         <input
           {...register("password", {
             required: "Password is required",
@@ -80,9 +99,10 @@ function ToDoList() {
           })}
           placeholder="Password"
         />
+        <span>{errors?.password?.message}</span>
         <input
           {...register("password1", {
-            required: true,
+            required: "write here",
             minLength: {
               value: 5,
               message: "Your password is too short.",
@@ -90,6 +110,7 @@ function ToDoList() {
           })}
           placeholder="Password1"
         />
+        <span>{errors?.password1?.message}</span>
         <button>Add</button>
       </form>
     </div>
