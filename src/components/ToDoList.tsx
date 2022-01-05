@@ -1,62 +1,23 @@
-import { useForm } from "react-hook-form";
-import {
-  atom,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilValue } from "recoil";
+import CreateToDo from "./CreateToDo";
+import { toDoState } from "../atoms";
+import ToDo from "./ToDo";
 
-interface IToDo {
-  text: string;
-  id: number;
-  category: "TO_DO" | "DOING" | "DONE";
-}
-
-const toDoState = atom<IToDo[]>({
-  // 타입 스크립트에게 toDoState는 toDo들의 배열이라는 것을 알려줘야함.
-  // 이를 위해 toDOS 가 어떻게 생겼는지 알려줄 인터페이스를 만들어
-  // 제네릭에 넣어줘야함.
-  key: "toDo",
-  default: [],
-});
-// atom을 생성해줍니다. recoil을 사용하기 위해.
-
-interface IForm {
-  toDo: string;
-}
+// atom을 생성해줍니다. recoil을 사용하기 위해
 
 // {text: "hello", category: "lalala"}
 
 function ToDoList() {
-  const [toDos, setToDos] = useRecoilState(toDoState); // recoil
-  const { register, handleSubmit, setValue } = useForm<IForm>(); // react-hook-form
-
-  const handleValid = ({ toDo }: IForm) => {
-    // form 으로부터 온 toDo를
-    // recoil의 setToDos을 통해 새로운 배열을 반환 해준다.
-    setToDos((oldToDos) => [
-      { text: toDo, id: Date.now(), category: "TO_DO" },
-      ...oldToDos,
-    ]);
-    setValue("toDo", ""); // input의 값을 clean 하게 해주는 거.
-  };
-
-  console.log(toDos); // recoil에 의해 공유되는 상태 (state)
+  const toDos = useRecoilValue(toDoState); // recoil
 
   return (
     <div>
       <h1>To Dos</h1>
       <hr />
-      <form onSubmit={handleSubmit(handleValid)}>
-        <input
-          {...register("toDo", { required: "Please write a To Do" })}
-          placeholder="Write a to do "
-        />
-        <button>Add</button>
-      </form>
+      <CreateToDo />
       <ul>
         {toDos.map((toDo) => (
-          <li key={toDo.id}>{toDo.text}</li>
+          <ToDo key={toDo.id} {...toDo} /> // 왜 이런식으로 작성했는지 공부.
         ))}
       </ul>
     </div>
