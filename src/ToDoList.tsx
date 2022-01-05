@@ -1,37 +1,31 @@
-import { useState } from "react";
-import React from "react";
 import { useForm } from "react-hook-form";
 
-/* function ToDoList() {
-  const [toDo, setToDo] = useState("");
-  const [toDoError, setToDoError] = useState("");
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const {
-      currentTarget: { value },
-    } = event;
-    setToDoError("");
-    setToDo(value);
-  };
+interface IForm {
+  toDo: string;
+}
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (toDo.length < 10) {
-      return setToDoError("To do should be longer");
-    }
-    console.log("submit");
+function ToDoList() {
+  const { register, handleSubmit, setValue } = useForm<IForm>();
+  const handleValid = (data: IForm) => {
+    console.log("add to do:", data.toDo);
+    setValue("toDo", "");
   };
   return (
     <div>
-      <form onSubmit={onSubmit}>
-        <input onChange={onChange} value={toDo} placeholder="Write a to do " />
+      <form onSubmit={handleSubmit(handleValid)}>
+        <input
+          {...register("toDo", { required: "Please write a To Do" })}
+          placeholder="Write a to do "
+        />
         <button>Add</button>
-        {toDoError !== "" ? toDoError : null}
       </form>
     </div>
   );
 }
- */
-interface IForm {
+
+export default ToDoList;
+
+/* interface IForm {
   email: string;
   firstName: string;
   lastName: string;
@@ -54,8 +48,13 @@ function ToDoList() {
   });
   const onValid = (data: IForm) => {
     if (data.password !== data.password1) {
-      setError("password1", { message: "Password are not the same" });
+      setError(
+        "password1",
+        { message: "Password are not the same" },
+        { shouldFocus: true }
+      );
     }
+    // setError("extraError", { message: "Server offline" });
   };
 
   console.log(errors);
@@ -63,7 +62,12 @@ function ToDoList() {
   return (
     <div>
       <form
-        style={{ display: "flex", flexDirection: "column" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: "320px",
+          margin: "20px auto",
+        }}
         onSubmit={handleSubmit(onValid)}
       >
         <input
@@ -78,7 +82,15 @@ function ToDoList() {
         />
         <span>{errors?.email?.message}</span>
         <input
-          {...register("firstName", { required: "write here" })}
+          {...register("firstName", {
+            required: "write here",
+            validate: {
+              noNico: (value) =>
+                value.includes("nico") ? "no nicos allowed" : true,
+              noNick: (value) =>
+                value.includes("nick") ? "no nick allowed" : true,
+            },
+          })}
           placeholder="First Name"
         />
         <span>{errors?.firstName?.message}</span>
@@ -112,9 +124,10 @@ function ToDoList() {
         />
         <span>{errors?.password1?.message}</span>
         <button>Add</button>
+        <span>{errors?.extraError?.message}</span>
       </form>
     </div>
   );
 }
 
-export default ToDoList;
+*/
