@@ -9,6 +9,7 @@ import ToDo from "./ToDo";
 
 function ToDoList() {
   const toDos = useRecoilValue(toDoState); // recoil
+  console.log(toDos);
 
   return (
     <div>
