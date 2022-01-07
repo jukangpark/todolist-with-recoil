@@ -1,26 +1,62 @@
-import { useRecoilValue } from "recoil";
+import { selector, useRecoilState, useRecoilValue } from "recoil";
 import CreateToDo from "./CreateToDo";
-import { toDoState } from "../atoms";
+import { categoryState, toDoSelector, toDoState } from "../atoms";
 import ToDo from "./ToDo";
+import React from "react";
 
 // atom을 생성해줍니다. recoil을 사용하기 위해
 
 // {text: "hello", category: "lalala"}
 
 function ToDoList() {
-  const toDos = useRecoilValue(toDoState); // recoil
-  console.log(toDos);
+  // const toDos = useRecoilValue(toDoState); // recoil
+  const toDos = useRecoilValue(toDoSelector);
+  const [category, setCategory] = useRecoilState(categoryState);
+  const onInput = (event: React.FormEvent<HTMLSelectElement>) => {
+    setCategory(event.currentTarget.value);
+  };
+  console.log(category);
 
   return (
     <div>
       <h1>To Dos</h1>
       <hr />
+      <select value={category} onInput={onInput}>
+        <option value="TO_DO">To Do</option>
+        <option value="DOING">Doing</option>
+        <option value="DONE">Done</option>
+      </select>
       <CreateToDo />
+      {toDos?.map((toDo) => (
+        <ToDo key={toDo.id} {...toDo} />
+      ))}
+      {/*  {category === "TO_DO" &&
+        toDo.map((aToDo) => <ToDo key={aToDo.id} {...aToDo} />)}
+      {category === "DOING" &&
+        doing.map((aToDo) => <ToDo key={aToDo.id} {...aToDo} />)}
+      {category === "DONE" &&
+        done.map((aToDo) => <ToDo key={aToDo.id} {...aToDo} />)} */}
+
+      {/* <h2>To Do</h2>
       <ul>
         {toDos.map((toDo) => (
-          <ToDo key={toDo.id} {...toDo} /> // 왜 이런식으로 작성했는지 공부.
+          <ToDo key={toDo.id} {...toDo} /> 
         ))}
       </ul>
+      <hr />
+      <h2>Doing</h2>
+      <ul>
+        {doing.map((toDo) => (
+          <ToDo key={toDo.id} {...toDo} /> 
+        ))}
+      </ul>
+      <hr />
+      <h2>Done</h2>
+      <ul>
+        {done.map((toDo) => (
+          <ToDo key={toDo.id} {...toDo} /> 
+        ))}
+      </ul> */}
     </div>
   );
 }

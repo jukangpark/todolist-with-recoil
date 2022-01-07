@@ -39,6 +39,7 @@ function ToDo({ text, category, id }: IToDo) {
       const targetIndex = oldToDos.findIndex((toDo) => toDo.id === id);
       const oldToDo = oldToDos[targetIndex];
       const newToDo = { text, id, category: name as any };
+      // name as "TO_DO" | "DOING" | "DONE" 또는 name as IToDo['category'] 로도 가능.
       console.log(oldToDo, newToDo);
       console.log(targetIndex);
       return [
